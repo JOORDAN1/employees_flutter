@@ -2,6 +2,7 @@ import 'package:employees/Items/list_Button.dart';
 import 'package:employees/Items/menu_button.dart';
 import 'package:employees/api_handler.dart';
 import 'package:employees/models/project.dart';
+import 'package:employees/projects/add_project_screen.dart';
 import 'package:employees/projects/edit_project_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -38,6 +39,12 @@ class _ProjectScreenState extends State<ProjectsScreen> {
       data = result;
       isLoading = false;
     });
+  }
+
+  void deleteProject(int id) async{
+    await apiHandler.deleteProject(id: id);
+
+    getData();
   }
 
   @override
@@ -85,7 +92,7 @@ class _ProjectScreenState extends State<ProjectsScreen> {
                           color: Colors.red,
                           tooltip: 'Delete',
                           onPressed: () {
-                            print('Delete ${data[index].Name}');
+                            deleteProject(data[index].Id);
                           },
                         ),
                       ],
@@ -96,10 +103,26 @@ class _ProjectScreenState extends State<ProjectsScreen> {
           ),
         ),
         SizedBox(height: 20),
-        ListButton(
-          buttonText: "Add Project",
-          onTap: () {},
-        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ListButton(
+              buttonText: "Add Project",
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(
+                        builder: (context) => AddProjectScreen())
+                );
+                print('Add new project');
+              },
+            ),
+            ListButton(
+              buttonText: "Refresh",
+              onTap: getData,
+            ),
+          ],
+        )
+
       ],
     );
   }
