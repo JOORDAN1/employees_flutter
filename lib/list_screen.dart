@@ -43,6 +43,7 @@ class _ListScreenState extends State<ListScreen> {
               centerTitle: true,
             ),
             body:Container(
+                margin: EdgeInsets.all(20),
                 decoration: const BoxDecoration(
                     color: Color.fromARGB(255, 243, 247, 250)),
                 child: childWidget

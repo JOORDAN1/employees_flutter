@@ -1,3 +1,4 @@
+import 'package:employees/Items/list_Button.dart';
 import 'package:employees/Items/menu_button.dart';
 import 'package:employees/api_handler.dart';
 import 'package:employees/models/project.dart';
@@ -58,18 +59,43 @@ class _ProjectScreenState extends State<ProjectsScreen> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          ListView.builder(
-            shrinkWrap: true,
-            itemCount: data.length,
-            itemBuilder: (BuildContext context, int index) {
-              return ListTile(
-                title: Text(data[index].Name),
-                subtitle: Text(data[index].Description),
-              );
-            },
+          SingleChildScrollView(
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: data.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Card(
+                  elevation: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          data[index].Name,
+                          style: GoogleFonts.montserrat(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          data[index].Description,
+                          style: GoogleFonts.montserrat(
+                            fontSize: 14,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
-          ElevatedButton(onPressed: () {}, child: Text("Add Project")
-          )
+          SizedBox(height: 20),
+          ListButton(buttonText: "Add Project", onTap: () {})
         ],
       ),
     );
