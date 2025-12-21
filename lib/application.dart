@@ -1,3 +1,4 @@
+import 'package:employees/list_screen.dart';
 import 'package:employees/main_menu_screen.dart';
 import 'package:employees/projects_screen.dart';
 import 'package:flutter/material.dart';
@@ -61,26 +62,9 @@ class _ApplicationState extends State<Application> {
     }
 
     if (activeScreen == "projects-screen") {
-      screenWidget = ProjectsScreen();
+      screenWidget = ListScreen(activeScreen: "projects-screen");
     }
 
-    return MaterialApp(
-      home:Scaffold(
-        // appBar: AppBar(
-        //   title: Text("Projects and Employees", style: GoogleFonts.montserrat(
-        //     color: Colors.white,
-        //     fontSize: 22,
-        //     fontWeight: FontWeight.bold
-        //   )),
-        //   backgroundColor: Color.fromARGB(255, 30, 42, 56),
-        //   centerTitle: true,
-        // ),
-        body:Container(
-          decoration: const BoxDecoration(
-              color: Color.fromARGB(255, 243, 247, 250)),
-            child: screenWidget,
-        )
-      )
-    );
+    return screenWidget;
   }
 }

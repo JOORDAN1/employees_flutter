@@ -2,6 +2,7 @@ import 'package:employees/Items/menu_button.dart';
 import 'package:employees/api_handler.dart';
 import 'package:employees/models/project.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ProjectsScreen extends StatefulWidget{
 
@@ -17,8 +18,7 @@ class ProjectsScreen extends StatefulWidget{
 
 }
 
-class _ProjectScreenState extends State<ProjectsScreen>
-{
+class _ProjectScreenState extends State<ProjectsScreen> {
   // ApiHandler apiHandler = ApiHandler();
   // late List<Project> data = [];
   //
@@ -51,9 +51,9 @@ class _ProjectScreenState extends State<ProjectsScreen>
     });
   }
 
+
   @override
-  Widget build(context)
-  {
+  Widget build(context) {
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -61,18 +61,17 @@ class _ProjectScreenState extends State<ProjectsScreen>
           ListView.builder(
             shrinkWrap: true,
             itemCount: data.length,
-            itemBuilder: (BuildContext context, int index){
+            itemBuilder: (BuildContext context, int index) {
               return ListTile(
-                leading: Text("${data[index].Id}"),
                 title: Text(data[index].Name),
                 subtitle: Text(data[index].Description),
               );
             },
           ),
-
+          ElevatedButton(onPressed: () {}, child: Text("Add Project")
+          )
         ],
       ),
     );
   }
-
 }
