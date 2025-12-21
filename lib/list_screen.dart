@@ -1,6 +1,6 @@
 import 'package:employees/main_menu_screen.dart';
 import 'package:employees/application.dart';
-import 'package:employees/projects_screen.dart';
+import 'package:employees/projects/projects_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -30,6 +30,13 @@ class _ListScreenState extends State<ListScreen> {
       childWidget = ProjectsScreen();
       appBarText = "Projects";
     }
+
+    if (widget.activeScreen == "edit-project-screen") {
+      childWidget = ProjectsScreen();
+      appBarText = "Edit Project";
+    }
+
+
 
     return MaterialApp(
         home:Scaffold(
