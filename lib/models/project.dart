@@ -20,6 +20,6 @@ class Project {
         "id": Id,
         "name": Name,
         "description" : Description,
-        
+
       };
 }

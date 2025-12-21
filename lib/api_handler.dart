@@ -4,7 +4,7 @@ import 'package:employees/models/project.dart';
 import 'package:http/http.dart' as http;
 
 class ApiHandler {
-  final String baseUri = "localhost:5068/api/projects";
+  final String baseUri = "http://localhost:5068/api/projects";
 
   Future<List<Project>> getProjectData() async{
     List<Project> ProjectsData = [];
@@ -25,7 +25,7 @@ class ApiHandler {
         }
 
     } catch(e){
-      return ProjectsData;
+      print("Error fetching projects: $e");
     }
     return ProjectsData;
   }

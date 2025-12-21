@@ -19,23 +19,41 @@ class ProjectsScreen extends StatefulWidget{
 
 class _ProjectScreenState extends State<ProjectsScreen>
 {
+  // ApiHandler apiHandler = ApiHandler();
+  // late List<Project> data = [];
+  //
+  // void getData() async {
+  //   data = await apiHandler.getProjectData();
+  //   setState(() {});
+  // }
+  //
+  // @override
+  // void initState(){
+  //   getData();
+  //   super.initState();
+  // }
+
+  final ApiHandler apiHandler = ApiHandler();
+  List<Project> data = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
+
+  void getData() async {
+    final result = await apiHandler.getProjectData();
+    setState(() {
+      data = result;
+      isLoading = false;
+    });
+  }
+
   @override
   Widget build(context)
   {
-    ApiHandler apiHandler = ApiHandler();
-    late List<Project> data = [];
-
-    void getData() async {
-      data = await apiHandler.getProjectData();
-      setState(() {});
-    }
-
-    @override
-    void initState(){
-      getData();
-      super.initState();
-    }
-
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -50,7 +68,8 @@ class _ProjectScreenState extends State<ProjectsScreen>
                 subtitle: Text(data[index].Description),
               );
             },
-          )
+          ),
+
         ],
       ),
     );
