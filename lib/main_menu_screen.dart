@@ -13,6 +13,10 @@ class MainMenu extends StatelessWidget{
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          Image.asset(''
+              'assets/images/logo.png',
+            width: 300,
+          ),
           MenuButton(buttonText: "Projects", onTap: () {},),
           SizedBox(height: 10),
           MenuButton(buttonText: "Employees", onTap: () {},),

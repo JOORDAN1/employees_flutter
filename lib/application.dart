@@ -9,8 +9,7 @@ class Application extends StatefulWidget{
   @override
   State<Application> createState() {
     return _ApplicationState();
-}
-
+  }
 }
 
 class _ApplicationState extends State<Application> {
@@ -22,19 +21,19 @@ class _ApplicationState extends State<Application> {
 
     return MaterialApp(
       home:Scaffold(
-        appBar: AppBar(
-          title: Text("Projects and Employees", style: GoogleFonts.montserrat(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.bold
-          )),
-          backgroundColor: Color.fromARGB(255, 255, 102, 0),
-          centerTitle: true
-        ),
+        // appBar: AppBar(
+        //   title: Text("Projects and Employees", style: GoogleFonts.montserrat(
+        //     color: Colors.white,
+        //     fontSize: 22,
+        //     fontWeight: FontWeight.bold
+        //   )),
+        //   backgroundColor: Color.fromARGB(255, 30, 42, 56),
+        //   centerTitle: true
+        // ),
         body:Container(
           decoration: const BoxDecoration(
-              color: Color.fromARGB(189, 220, 220, 220)),
-          child: screenWidget,
+              color: Color.fromARGB(255, 243, 247, 250)),
+            child: screenWidget,
         )
       )
     );

@@ -20,14 +20,18 @@ class MenuButton extends StatelessWidget{
         style: ElevatedButton.styleFrom(
           // backgroundColor: Color.fromARGB(255, 0, 102, 204),
           // foregroundColor: Color.fromARGB(255, 255, 102, 0),
-          backgroundColor: Color.fromARGB(255, 255, 102, 0),
-          foregroundColor: Color.fromARGB(255, 29, 128, 227),
-          minimumSize: Size(200, 60)
+          backgroundColor: Color(0xFFFF6B00),
+          foregroundColor: Colors.white,
+          minimumSize: Size(200, 60),
+          elevation: 4,
+          shadowColor: Colors.black.withOpacity(0.5),
         ),
         child: Text(buttonText,
           style: GoogleFonts.balooBhai2(
-            fontWeight: FontWeight.bold
-          ),
-        ));
+            fontWeight: FontWeight.bold,
+            fontSize: 18
+          )
+        ),
+    );
   }
 }
