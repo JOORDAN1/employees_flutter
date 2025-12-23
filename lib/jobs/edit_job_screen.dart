@@ -1,48 +1,49 @@
 import 'package:employees/Items/list_Button.dart';
-import 'package:employees/projects/projects_api_handler.dart';
-import 'package:employees/models/project.dart';
+import 'package:employees/jobs/jobs_api_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 
-class EditProjectScreen extends StatefulWidget{
+import '../models/job.dart';
 
-  final Project project;
+class EditJobScreen extends StatefulWidget{
+
+  final Job job;
   final String appBarText;
-  const EditProjectScreen({super.key, required this.project, required this.appBarText});
+  const EditJobScreen({super.key, required this.job, required this.appBarText});
 
   @override
-  State<EditProjectScreen> createState()
+  State<EditJobScreen> createState()
   {
-    return _EditProjectScreenState();
+    return _EditJobScreenState();
   }
 
 }
 
-class _EditProjectScreenState extends State<EditProjectScreen> {
-final _formKey = GlobalKey<FormBuilderState>();
-ProjectApiHandler apiHandler = ProjectApiHandler();
-late http.Response response;
+class _EditJobScreenState extends State<EditJobScreen> {
+  final _formKey = GlobalKey<FormBuilderState>();
+  JobsApiHandler apiHandler = JobsApiHandler();
+  late http.Response response;
 
-void UpdateData() async {
-  if(_formKey.currentState!.saveAndValidate())
+  void UpdateData() async {
+    if(_formKey.currentState!.saveAndValidate())
     {
       final data = _formKey.currentState!.value;
 
-      final project = Project(
-          Id: widget.project.Id,
+      final job = Job(
+          Id: widget.job.Id,
           Name: data['Name'],
           Description: data['Description']
       );
 
-      response = await apiHandler.updateProject(project: project, id: widget.project.Id);
+      response = await apiHandler.updateJob(job: job, id: widget.job.Id);
 
       if(!mounted) return;
       Navigator.pop(context);
     }
-}
+  }
 
 
   @override
@@ -69,23 +70,23 @@ void UpdateData() async {
                 decoration: const BoxDecoration(
                     color: Color.fromARGB(255, 243, 247, 250)),
                 child : Padding(
-                    padding: EdgeInsetsGeometry.all(10),
+                  padding: EdgeInsetsGeometry.all(10),
                   child: FormBuilder(
                     key: _formKey,
                     initialValue: {
-                      'Name' : widget.project.Name,
-                      'Description' : widget.project.Description
+                      'Name' : widget.job.Name,
+                      'Description' : widget.job.Description
                     },
                     child: Column(
                       children: [
                         FormBuilderTextField(
                           name: 'Name',
-                        decoration: const InputDecoration(labelText: 'Name'),
-                        validator: FormBuilderValidators.compose([
-                         FormBuilderValidators.required(),
-                         FormBuilderValidators.maxLength(50)
-                        ]
-                        ),),
+                          decoration: const InputDecoration(labelText: 'Name'),
+                          validator: FormBuilderValidators.compose([
+                            FormBuilderValidators.required(),
+                            FormBuilderValidators.maxLength(50)
+                          ]
+                          ),),
                         SizedBox(height: 20,),
                         FormBuilderTextField(
                           name: 'Description',
@@ -96,7 +97,7 @@ void UpdateData() async {
                           ]
                           ),),
                         SizedBox(height: 20),
-                        ListButton(buttonText: "Update", onTap: UpdateData)
+                        ListButton(buttonText: "Update Task", onTap: UpdateData)
                       ],
                     ),
                   ),

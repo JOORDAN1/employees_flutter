@@ -1,49 +1,47 @@
 import 'package:employees/Items/list_Button.dart';
-import 'package:employees/projects/projects_api_handler.dart';
-import 'package:employees/models/project.dart';
+import 'package:employees/jobs/jobs_api_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 
-class EditProjectScreen extends StatefulWidget{
+import '../models/job.dart';
 
-  final Project project;
-  final String appBarText;
-  const EditProjectScreen({super.key, required this.project, required this.appBarText});
+class AddJobScreen extends StatefulWidget{
+
+
+  const AddJobScreen({super.key});
 
   @override
-  State<EditProjectScreen> createState()
+  State<AddJobScreen> createState()
   {
-    return _EditProjectScreenState();
+    return _AddJobScreenState();
   }
 
 }
 
-class _EditProjectScreenState extends State<EditProjectScreen> {
-final _formKey = GlobalKey<FormBuilderState>();
-ProjectApiHandler apiHandler = ProjectApiHandler();
-late http.Response response;
+class _AddJobScreenState extends State<AddJobScreen> {
+  final _formKey = GlobalKey<FormBuilderState>();
+  JobsApiHandler apiHandler = JobsApiHandler();
 
-void UpdateData() async {
-  if(_formKey.currentState!.saveAndValidate())
+  void addJob() async{
+    if(_formKey.currentState!.saveAndValidate())
     {
       final data = _formKey.currentState!.value;
 
-      final project = Project(
-          Id: widget.project.Id,
-          Name: data['Name'],
-          Description: data['Description']
+      final job = Job(
+        Id: 0,
+        Name: data['Name'],
+        Description: data['Description'],
       );
 
-      response = await apiHandler.updateProject(project: project, id: widget.project.Id);
-
-      if(!mounted) return;
-      Navigator.pop(context);
+      await apiHandler.addJob(job: job);
     }
-}
 
+    if (!mounted) return;
+    Navigator.pop(context);
+  }
 
   @override
   Widget build(context) {
@@ -56,7 +54,7 @@ void UpdateData() async {
                   },
                   icon: Icon(Icons.arrow_back, color: Colors.white)
               ),
-              title: Text(widget.appBarText, style: GoogleFonts.montserrat(
+              title: Text("Add Task", style: GoogleFonts.montserrat(
                   color: Colors.white,
                   fontSize: 22,
                   fontWeight: FontWeight.bold
@@ -69,23 +67,19 @@ void UpdateData() async {
                 decoration: const BoxDecoration(
                     color: Color.fromARGB(255, 243, 247, 250)),
                 child : Padding(
-                    padding: EdgeInsetsGeometry.all(10),
+                  padding: EdgeInsetsGeometry.all(10),
                   child: FormBuilder(
                     key: _formKey,
-                    initialValue: {
-                      'Name' : widget.project.Name,
-                      'Description' : widget.project.Description
-                    },
                     child: Column(
                       children: [
                         FormBuilderTextField(
                           name: 'Name',
-                        decoration: const InputDecoration(labelText: 'Name'),
-                        validator: FormBuilderValidators.compose([
-                         FormBuilderValidators.required(),
-                         FormBuilderValidators.maxLength(50)
-                        ]
-                        ),),
+                          decoration: const InputDecoration(labelText: 'Name'),
+                          validator: FormBuilderValidators.compose([
+                            FormBuilderValidators.required(),
+                            FormBuilderValidators.maxLength(50)
+                          ]
+                          ),),
                         SizedBox(height: 20,),
                         FormBuilderTextField(
                           name: 'Description',
@@ -96,7 +90,7 @@ void UpdateData() async {
                           ]
                           ),),
                         SizedBox(height: 20),
-                        ListButton(buttonText: "Update", onTap: UpdateData)
+                        ListButton(buttonText: "Add Task", onTap: addJob)
                       ],
                     ),
                   ),

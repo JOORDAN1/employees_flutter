@@ -22,7 +22,7 @@ class ListButton extends StatelessWidget{
         // foregroundColor: Color.fromARGB(255, 255, 102, 0),
         backgroundColor: Color(0xFFFF6B00),
         foregroundColor: Colors.white,
-        minimumSize: Size(200, 60),
+        minimumSize: Size(100, 50),
         elevation: 4,
         shadowColor: Colors.black.withOpacity(0.5),
       ),

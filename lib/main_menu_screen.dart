@@ -7,13 +7,13 @@ import 'package:google_fonts/google_fonts.dart';
     const MainMenu(
         this.goToProjects,
         this.goToEmployees,
-        this.goToTasks,
+        this.goToJobs,
         {super.key}
         );
 
     final void Function() goToProjects;
     final void Function() goToEmployees;
-    final void Function() goToTasks;
+    final void Function() goToJobs;
 
     @override
     Widget build(context)
@@ -36,7 +36,7 @@ import 'package:google_fonts/google_fonts.dart';
                       SizedBox(height: 10),
                       MenuButton(buttonText: "Employees", onTap: goToEmployees,),
                       SizedBox(height: 10),
-                      MenuButton(buttonText: "Tasks", onTap: goToTasks,)
+                      MenuButton(buttonText: "Tasks", onTap: goToJobs,)
                     ],
                   ),
                 )
