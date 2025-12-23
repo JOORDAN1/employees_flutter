@@ -1,30 +1,30 @@
 import 'package:employees/Items/list_Button.dart';
 import 'package:employees/Items/menu_button.dart';
-import 'package:employees/projects/projects_api_handler.dart';
-import 'package:employees/models/project.dart';
-import 'package:employees/projects/add_project_screen.dart';
-import 'package:employees/projects/edit_project_screen.dart';
+import 'package:employees/jobs/add_job_screen.dart';
+import 'package:employees/jobs/edit_job_screen.dart';
+import 'package:employees/jobs/jobs_api_handler.dart';
+import 'package:employees/models/job.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class ProjectsScreen extends StatefulWidget{
+class JobsScreen extends StatefulWidget{
 
-  const ProjectsScreen({super.key});
+  const JobsScreen({super.key});
 
   @override
-  State<ProjectsScreen> createState()
+  State<JobsScreen> createState()
   {
-    return _ProjectScreenState();
+    return _JobsScreenState();
   }
 
 
 
 }
 
-class _ProjectScreenState extends State<ProjectsScreen> {
+class _JobsScreenState extends State<JobsScreen> {
 
-  final ProjectApiHandler apiHandler = ProjectApiHandler();
-  List<Project> data = [];
+  final JobsApiHandler apiHandler = JobsApiHandler();
+  List<Job> data = [];
   bool isLoading = true;
 
   @override
@@ -34,15 +34,15 @@ class _ProjectScreenState extends State<ProjectsScreen> {
   }
 
   void getData() async {
-    final result = await apiHandler.getProjectData();
+    final result = await apiHandler.getJobsData();
     setState(() {
       data = result;
       isLoading = false;
     });
   }
 
-  void deleteProject(int id) async{
-    await apiHandler.deleteProject(id: id);
+  void deleteJob(int id) async{
+    await apiHandler.deleteJob(id: id);
 
     getData();
   }
@@ -53,7 +53,7 @@ class _ProjectScreenState extends State<ProjectsScreen> {
       children: [
         Expanded(
           child: ListView.builder(
-            itemCount: data.length,
+              itemCount: data.length,
               itemBuilder: (context, index) {
                 return Card(
                   elevation: 2,
@@ -80,9 +80,9 @@ class _ProjectScreenState extends State<ProjectsScreen> {
                           color: Colors.orange,
                           tooltip: 'Edit',
                           onPressed: () {
-                            Navigator.push(context, 
-                            MaterialPageRoute(
-                                builder: (context) => EditProjectScreen(project: data[index], appBarText: "Edit ${data[index].Name}"))
+                            Navigator.push(context,
+                                MaterialPageRoute(
+                                    builder: (context) => EditJobScreen(job: data[index], appBarText: "Edit task."))
                             );
                             print('Edit ${data[index].Name}');
                           },
@@ -92,7 +92,7 @@ class _ProjectScreenState extends State<ProjectsScreen> {
                           color: Colors.red,
                           tooltip: 'Delete',
                           onPressed: () {
-                            deleteProject(data[index].Id);
+                            deleteJob(data[index].Id);
                           },
                         ),
                       ],
@@ -107,13 +107,13 @@ class _ProjectScreenState extends State<ProjectsScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ListButton(
-              buttonText: "Add Project",
+              buttonText: "Add Job",
               onTap: () {
                 Navigator.push(context,
                     MaterialPageRoute(
-                        builder: (context) => AddProjectScreen())
+                        builder: (context) => AddJobScreen())
                 );
-                print('Add new project');
+                print('Add new job');
               },
             ),
             ListButton(

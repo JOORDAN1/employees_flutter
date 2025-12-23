@@ -1,42 +1,44 @@
 import 'package:employees/Items/list_Button.dart';
-import 'package:employees/projects/projects_api_handler.dart';
-import 'package:employees/models/project.dart';
+import 'package:employees/employees/employees_api_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 
-class AddProjectScreen extends StatefulWidget{
+import '../models/employee.dart';
+
+class AddEmployeeScreen extends StatefulWidget{
 
 
-  const AddProjectScreen({super.key});
+  const AddEmployeeScreen({super.key});
 
   @override
-  State<AddProjectScreen> createState()
+  State<AddEmployeeScreen> createState()
   {
-    return _AddProjectScreenState();
+    return _AddEmployeeScreenState();
   }
 
 }
 
-class _AddProjectScreenState extends State<AddProjectScreen> {
+class _AddEmployeeScreenState extends State<AddEmployeeScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
-  ProjectApiHandler apiHandler = ProjectApiHandler();
+  EmployeesApiHandler apiHandler = EmployeesApiHandler();
 
-  void addProject() async{
+  void addEmployee() async{
     if(_formKey.currentState!.saveAndValidate())
-      {
-        final data = _formKey.currentState!.value;
+    {
+      final data = _formKey.currentState!.value;
 
-        final project = Project(
-            Id: 0,
-            Name: data['Name'],
-            Description: data['Description'],
-        );
+      final employee = Employee(
+        Id: 0,
+        FirstName: data['FirstName'],
+        LastName: data['LastName'],
+        Email: data['Email'],
+      );
 
-        await apiHandler.addProject(project: project);
-      }
+      await apiHandler.addEmployee(employee: employee);
+    }
 
     if (!mounted) return;
     Navigator.pop(context);
@@ -53,7 +55,7 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                   },
                   icon: Icon(Icons.arrow_back, color: Colors.white)
               ),
-              title: Text("Add Project", style: GoogleFonts.montserrat(
+              title: Text("Add Employee", style: GoogleFonts.montserrat(
                   color: Colors.white,
                   fontSize: 22,
                   fontWeight: FontWeight.bold
@@ -72,24 +74,33 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                     child: Column(
                       children: [
                         FormBuilderTextField(
-                          name: 'Name',
-                          decoration: const InputDecoration(labelText: 'Name'),
+                          name: 'FirstName',
+                          decoration: const InputDecoration(labelText: 'FirstName'),
+                          validator: FormBuilderValidators.compose([
+                            FormBuilderValidators.required(),
+                            FormBuilderValidators.maxLength(20)
+                          ]
+                          ),),
+                        SizedBox(height: 20,),
+                        FormBuilderTextField(
+                          name: 'LastName',
+                          decoration: const InputDecoration(labelText: 'LastName'),
+                          validator: FormBuilderValidators.compose([
+                            FormBuilderValidators.required(),
+                            FormBuilderValidators.maxLength(30)
+                          ]
+                          ),),
+                        SizedBox(height: 20,),
+                        FormBuilderTextField(
+                          name: 'Email',
+                          decoration: const InputDecoration(labelText: 'Email'),
                           validator: FormBuilderValidators.compose([
                             FormBuilderValidators.required(),
                             FormBuilderValidators.maxLength(50)
                           ]
                           ),),
-                        SizedBox(height: 20,),
-                        FormBuilderTextField(
-                          name: 'Description',
-                          decoration: const InputDecoration(labelText: 'Description'),
-                          validator: FormBuilderValidators.compose([
-                            FormBuilderValidators.required(),
-                            FormBuilderValidators.maxLength(200)
-                          ]
-                          ),),
                         SizedBox(height: 20),
-                        ListButton(buttonText: "Add Project", onTap: addProject)
+                        ListButton(buttonText: "Add Employee", onTap: addEmployee)
                       ],
                     ),
                   ),

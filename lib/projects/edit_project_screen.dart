@@ -1,5 +1,5 @@
 import 'package:employees/Items/list_Button.dart';
-import 'package:employees/api_handler.dart';
+import 'package:employees/projects/projects_api_handler.dart';
 import 'package:employees/models/project.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -23,7 +23,7 @@ class EditProjectScreen extends StatefulWidget{
 
 class _EditProjectScreenState extends State<EditProjectScreen> {
 final _formKey = GlobalKey<FormBuilderState>();
-ApiHandler apiHandler = ApiHandler();
+ProjectApiHandler apiHandler = ProjectApiHandler();
 late http.Response response;
 
 void UpdateData() async {
@@ -50,6 +50,12 @@ void UpdateData() async {
     return MaterialApp(
         home:Scaffold(
             appBar: AppBar(
+              leading: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(Icons.arrow_back, color: Colors.white)
+              ),
               title: Text(widget.appBarText, style: GoogleFonts.montserrat(
                   color: Colors.white,
                   fontSize: 22,

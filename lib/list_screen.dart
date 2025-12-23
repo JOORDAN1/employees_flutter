@@ -1,3 +1,5 @@
+import 'package:employees/employees/employees_screen.dart';
+import 'package:employees/jobs/jobs_screen.dart';
 import 'package:employees/main_menu_screen.dart';
 import 'package:employees/application.dart';
 import 'package:employees/projects/projects_screen.dart';
@@ -6,9 +8,10 @@ import 'package:google_fonts/google_fonts.dart';
 
 class ListScreen extends StatefulWidget{
 
-  const ListScreen({super.key, required this.activeScreen});
+  const ListScreen({super.key, required this.activeScreen, required this.backToMenu});
 
   final String activeScreen;
+  final void Function() backToMenu;
 
   @override
   State<ListScreen> createState() {
@@ -31,9 +34,14 @@ class _ListScreenState extends State<ListScreen> {
       appBarText = "Projects";
     }
 
-    if (widget.activeScreen == "edit-project-screen") {
-      childWidget = ProjectsScreen();
-      appBarText = "Edit Project";
+    if (widget.activeScreen == "employees-screen") {
+      childWidget = EmployeesScreen();
+      appBarText = "Employees";
+    }
+
+    if (widget.activeScreen == "jobs-screen") {
+      childWidget = JobsScreen();
+      appBarText = "Tasks";
     }
 
 
@@ -41,6 +49,10 @@ class _ListScreenState extends State<ListScreen> {
     return MaterialApp(
         home:Scaffold(
             appBar: AppBar(
+              leading: IconButton(
+                  onPressed: widget.backToMenu,
+                  icon: Icon(Icons.arrow_back, color: Colors.white)
+              ),
               title: Text(appBarText, style: GoogleFonts.montserrat(
                   color: Colors.white,
                   fontSize: 22,

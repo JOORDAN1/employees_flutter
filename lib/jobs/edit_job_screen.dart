@@ -1,46 +1,50 @@
 import 'package:employees/Items/list_Button.dart';
-import 'package:employees/projects/projects_api_handler.dart';
-import 'package:employees/models/project.dart';
+import 'package:employees/jobs/jobs_api_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 
-class AddProjectScreen extends StatefulWidget{
+import '../models/job.dart';
 
+class EditJobScreen extends StatefulWidget{
 
-  const AddProjectScreen({super.key});
+  final Job job;
+  final String appBarText;
+  const EditJobScreen({super.key, required this.job, required this.appBarText});
 
   @override
-  State<AddProjectScreen> createState()
+  State<EditJobScreen> createState()
   {
-    return _AddProjectScreenState();
+    return _EditJobScreenState();
   }
 
 }
 
-class _AddProjectScreenState extends State<AddProjectScreen> {
+class _EditJobScreenState extends State<EditJobScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
-  ProjectApiHandler apiHandler = ProjectApiHandler();
+  JobsApiHandler apiHandler = JobsApiHandler();
+  late http.Response response;
 
-  void addProject() async{
+  void UpdateData() async {
     if(_formKey.currentState!.saveAndValidate())
-      {
-        final data = _formKey.currentState!.value;
+    {
+      final data = _formKey.currentState!.value;
 
-        final project = Project(
-            Id: 0,
-            Name: data['Name'],
-            Description: data['Description'],
-        );
+      final job = Job(
+          Id: widget.job.Id,
+          Name: data['Name'],
+          Description: data['Description']
+      );
 
-        await apiHandler.addProject(project: project);
-      }
+      response = await apiHandler.updateJob(job: job, id: widget.job.Id);
 
-    if (!mounted) return;
-    Navigator.pop(context);
+      if(!mounted) return;
+      Navigator.pop(context);
+    }
   }
+
 
   @override
   Widget build(context) {
@@ -53,7 +57,7 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                   },
                   icon: Icon(Icons.arrow_back, color: Colors.white)
               ),
-              title: Text("Add Project", style: GoogleFonts.montserrat(
+              title: Text(widget.appBarText, style: GoogleFonts.montserrat(
                   color: Colors.white,
                   fontSize: 22,
                   fontWeight: FontWeight.bold
@@ -69,6 +73,10 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                   padding: EdgeInsetsGeometry.all(10),
                   child: FormBuilder(
                     key: _formKey,
+                    initialValue: {
+                      'Name' : widget.job.Name,
+                      'Description' : widget.job.Description
+                    },
                     child: Column(
                       children: [
                         FormBuilderTextField(
@@ -89,7 +97,7 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                           ]
                           ),),
                         SizedBox(height: 20),
-                        ListButton(buttonText: "Add Project", onTap: addProject)
+                        ListButton(buttonText: "Update Task", onTap: UpdateData)
                       ],
                     ),
                   ),

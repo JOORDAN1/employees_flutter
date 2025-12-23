@@ -31,9 +31,9 @@ class _ApplicationState extends State<Application> {
     });
   }
 
-  void switchScreenToTasks() {
+  void switchScreenToJobs() {
     setState(() {
-      activeScreen = "tasks-screen";
+      activeScreen = "jobs-screen";
     });
   }
 
@@ -49,7 +49,7 @@ class _ApplicationState extends State<Application> {
     Widget screenWidget =  MainMenu(
         switchScreenToProjects,
         switchScreenToEmployees,
-        switchScreenToTasks
+        switchScreenToJobs
     );
 
 
@@ -57,13 +57,23 @@ class _ApplicationState extends State<Application> {
       screenWidget =  MainMenu(
         switchScreenToProjects,
         switchScreenToEmployees,
-        switchScreenToTasks
+        switchScreenToJobs
       );
     }
 
     if (activeScreen == "projects-screen") {
-      screenWidget = ListScreen(activeScreen: "projects-screen");
+      screenWidget = ListScreen(activeScreen: "projects-screen", backToMenu: switchScreenToMenu);
     }
+
+    if (activeScreen == "employees-screen") {
+      screenWidget = ListScreen(activeScreen: "employees-screen", backToMenu: switchScreenToMenu);
+    }
+
+    if (activeScreen == "jobs-screen") {
+      screenWidget = ListScreen(activeScreen: "jobs-screen", backToMenu: switchScreenToMenu);
+    }
+
+
 
     return screenWidget;
   }

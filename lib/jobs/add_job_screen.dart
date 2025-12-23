@@ -1,42 +1,43 @@
 import 'package:employees/Items/list_Button.dart';
-import 'package:employees/projects/projects_api_handler.dart';
-import 'package:employees/models/project.dart';
+import 'package:employees/jobs/jobs_api_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 
-class AddProjectScreen extends StatefulWidget{
+import '../models/job.dart';
+
+class AddJobScreen extends StatefulWidget{
 
 
-  const AddProjectScreen({super.key});
+  const AddJobScreen({super.key});
 
   @override
-  State<AddProjectScreen> createState()
+  State<AddJobScreen> createState()
   {
-    return _AddProjectScreenState();
+    return _AddJobScreenState();
   }
 
 }
 
-class _AddProjectScreenState extends State<AddProjectScreen> {
+class _AddJobScreenState extends State<AddJobScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
-  ProjectApiHandler apiHandler = ProjectApiHandler();
+  JobsApiHandler apiHandler = JobsApiHandler();
 
-  void addProject() async{
+  void addJob() async{
     if(_formKey.currentState!.saveAndValidate())
-      {
-        final data = _formKey.currentState!.value;
+    {
+      final data = _formKey.currentState!.value;
 
-        final project = Project(
-            Id: 0,
-            Name: data['Name'],
-            Description: data['Description'],
-        );
+      final job = Job(
+        Id: 0,
+        Name: data['Name'],
+        Description: data['Description'],
+      );
 
-        await apiHandler.addProject(project: project);
-      }
+      await apiHandler.addJob(job: job);
+    }
 
     if (!mounted) return;
     Navigator.pop(context);
@@ -53,7 +54,7 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                   },
                   icon: Icon(Icons.arrow_back, color: Colors.white)
               ),
-              title: Text("Add Project", style: GoogleFonts.montserrat(
+              title: Text("Add Task", style: GoogleFonts.montserrat(
                   color: Colors.white,
                   fontSize: 22,
                   fontWeight: FontWeight.bold
@@ -89,7 +90,7 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                           ]
                           ),),
                         SizedBox(height: 20),
-                        ListButton(buttonText: "Add Project", onTap: addProject)
+                        ListButton(buttonText: "Add Task", onTap: addJob)
                       ],
                     ),
                   ),
