@@ -1,5 +1,6 @@
 import 'package:employees/Items/list_Button.dart';
 import 'package:employees/Items/menu_button.dart';
+import 'package:employees/employees/add_employee_screen.dart';
 import 'package:employees/employees/edit_employee_screen.dart';
 import 'package:employees/employees/employees_api_handler.dart';
 import 'package:employees/models/employee.dart';
@@ -112,7 +113,7 @@ class _EmployeesScreen extends State<EmployeesScreen> {
               onTap: () {
                 Navigator.push(context,
                     MaterialPageRoute(
-                        builder: (context) => AddProjectScreen())
+                        builder: (context) => AddEmployeeScreen())
                 );
                 print('Add new employee');
               },
