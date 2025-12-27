@@ -4,13 +4,13 @@ class Employee {
   final int Id;
   final String FirstName;
   final String LastName;
-  final String Email;
+  final String? Email;
 
   const Employee({
     required this.Id,
     required this.FirstName,
     required this.LastName,
-    required this.Email
+    this.Email
   });
 
   factory Employee.fromJson(Map<String, dynamic> json) => Employee(

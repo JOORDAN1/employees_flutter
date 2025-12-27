@@ -68,7 +68,7 @@ class _EmployeesScreen extends State<EmployeesScreen> {
                       ),
                     ),
                     subtitle: Text(
-                      data[index].Email,
+                      data[index].Email!,
                       style: GoogleFonts.montserrat(
                         fontSize: 14,
                         color: Colors.grey[600],

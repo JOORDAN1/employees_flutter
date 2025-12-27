@@ -7,7 +7,7 @@ class ListButton extends StatelessWidget{
       {
         super.key,
         required this.buttonText,
-        required this.onTap,
+        required this.onTap
       });
 
   final String buttonText;
