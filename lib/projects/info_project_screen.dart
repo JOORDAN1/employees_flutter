@@ -31,26 +31,26 @@ import 'package:employees/models/project_employees.dart';
     ProjectApiHandler apiHandler = ProjectApiHandler();
     EmployeesNotInProjectApiHandler notInApi = EmployeesNotInProjectApiHandler();
 
-    // Project? project;
-    // bool isLoading = true;
+    Project? project;
+    bool isLoading = true;
     Employee? selectedEmployee;
 
     @override
-    // void initState() {
-    //   super.initState();
-    //   _loadProject();
-    // }
-    //
-    // Future<void> _loadProject() async {
-    //   final result = await apiHandler.getProjectData(widget.project.Id);
-    //
-    //   if (!mounted) return;
-    //
-    //   setState(() {
-    //     project = result;
-    //     isLoading = false;
-    //   });
-    // }
+    void initState() {
+      super.initState();
+      _loadProject();
+    }
+
+    Future<void> _loadProject() async {
+      final result = await apiHandler.getProjectData(widget.project.Id);
+
+      if (!mounted) return;
+
+      setState(() {
+        project = result;
+        isLoading = false;
+      });
+    }
 
 
     Future<void> addEmployeeProject(Employee employee) async{
@@ -58,22 +58,14 @@ import 'package:employees/models/project_employees.dart';
         final employeeProjects = EmployeeProjects(
           id: 0,
           employeeId: employee.Id,
-          projectId: widget.project.Id
+          projectId: project!.Id
         );
 
         final response = await notInApi.addEmployeeProject(employeeProjects: employeeProjects);
 
         if (response.statusCode >= 200 && response.statusCode < 300) {
-          setState(() {
-            widget.project.Employees?.add(
-              ProjectEmployees(
-                Id : 0,
-                FirstName: selectedEmployee!.FirstName,
-                LastName: selectedEmployee!.LastName,
-              ),
-            );
-          });
           Navigator.pop(context);
+          await _loadProject();
         } else {
           showDialog(
             context: context,
@@ -94,14 +86,10 @@ import 'package:employees/models/project_employees.dart';
     }
 
   void deleteEmployeeProjects (ProjectEmployees employee) async {
-      final response = await notInApi.deleteProject(empId: employee.Id, prjId: widget.project.Id);
+      final response = await notInApi.deleteProject(empId: employee.Id, prjId: project!.Id);
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
-        setState(() {
-          widget.project.Employees?.removeWhere(
-                  (e) => e.Id == employee.Id
-          );
-        });
+        await _loadProject();
       }
       else {
         print("Error with deleting");
@@ -143,15 +131,15 @@ import 'package:employees/models/project_employees.dart';
                         children: [
                           InfoLabel(
                             label: 'Name : ',
-                            text: "${widget.project.Name}",
+                            text: "${project!.Name}",
                           ),
                           SizedBox(height: 20),
                           InfoLabel(
                             label: 'Description : ',
-                            text: "${widget.project.Description}",
+                            text: "${project!.Description}",
                           ),
                           SizedBox(height: 30),
-                          if (widget.project.Employees != null && widget.project.Employees!.isNotEmpty)
+                          if (project!.Employees != null && project!.Employees!.isNotEmpty)
                             Text(
                               'Employees:',
                               style: GoogleFonts.montserrat(
@@ -160,10 +148,10 @@ import 'package:employees/models/project_employees.dart';
                               ),
                             ),
                           SizedBox(height: 20),
-                          if (widget.project.Employees != null && widget.project.Employees!.isNotEmpty)
+                          if (project!.Employees != null && project!.Employees!.isNotEmpty)
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: widget.project.Employees!.map((emp) {
+                              children: project!.Employees!.map((emp) {
                                 return Row(
                                   children: [
                                     Text(
@@ -198,7 +186,7 @@ import 'package:employees/models/project_employees.dart';
                                       content:
                                         DropdownSearch<Employee>(
                                           items: (filter, infiniteScrollProps) async {
-                                            final employees = await notInApi.getEmployeesNotInProject(widget.project.Id);
+                                            final employees = await notInApi.getEmployeesNotInProject(project!.Id);
                                             if (filter != null && filter.isNotEmpty) {
                                               return employees.where((e) =>
                                               e.FirstName.toLowerCase().contains(filter.toLowerCase()) ||

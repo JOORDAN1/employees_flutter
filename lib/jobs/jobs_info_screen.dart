@@ -33,60 +33,43 @@ class _JobsInfoScreenState extends State<JobsInfoScreen> {
   EmployeesApiHandler employeesApiHandler = EmployeesApiHandler();
   JobsApiHandler apiHandler = JobsApiHandler();
 
-
+  Job? job;
+  bool isLoading = true;
   Employee? selectedEmployee;
 
-  //
-  //   if (response.statusCode >= 200 && response.statusCode < 300) {
-  //     setState(() {
-  //       widget.project.Employees?.add(
-  //         ProjectEmployees(
-  //           Id : 0,
-  //           FirstName: selectedEmployee!.FirstName,
-  //           LastName: selectedEmployee!.LastName,
-  //         ),
-  //       );
-  //     });
-  //     Navigator.pop(context);
-  //   } else {
-  //     showDialog(
-  //       context: context,
-  //       builder: (_) => AlertDialog(
-  //         title: Text('Error'),
-  //         content: Text('Failed to add employee to project.'),
-  //         actions: [
-  //           TextButton(
-  //             onPressed: () => Navigator.pop(context),
-  //             child: Text('OK'),
-  //           ),
-  //         ],
-  //       ),
-  //     );
-  //   }
-  //
-  //   if (!mounted) return;
-  // }
 
+  @override
+  void initState() {
+    super.initState();
+    _loadProject();
+  }
 
+  Future<void> _loadProject() async {
+    final result = await apiHandler.getJobData(widget.job.Id);
+
+    if (!mounted) return;
+
+    setState(() {
+      job = result;
+      isLoading = false;
+    });
+  }
 
   Future<void> assignEmployee() async {
 
-      final job = Job(
-          Id: widget.job.Id,
-          Name: widget.job.Name,
-          Description: widget.job.Description,
+      final jobToAssign = Job(
+          Id: job!.Id,
+          Name: job!.Name,
+          Description: job!.Description,
           employeeId: selectedEmployee?.Id
       );
 
-      final response = await apiHandler.updateJob(job: job, id: widget.job.Id);
+      final response = await apiHandler.updateJob(job: jobToAssign, id: job!.Id);
 
       if(!mounted) return;
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
-        setState(() {
-          // Zaktualizuj lokalny obiekt job w stanie komponentu
-          widget.job.employee = selectedEmployee;
-        });
+        _loadProject();
         Navigator.pop(context);
       } else {
             showDialog(
@@ -104,24 +87,6 @@ class _JobsInfoScreenState extends State<JobsInfoScreen> {
             );
           }
   }
-  //
-  // void deleteEmployeeProjects (ProjectEmployees employee) async {
-  //   final response = await notInApi.deleteProject(empId: employee.Id, prjId: widget.project.Id);
-  //
-  //   if (response.statusCode >= 200 && response.statusCode < 300) {
-  //     setState(() {
-  //       widget.project.Employees?.removeWhere(
-  //               (e) => e.Id == employee.Id
-  //       );
-  //     });
-  //   }
-  //   else {
-  //     print("Error with deleting");
-  //   }
-  // }
-  //
-  //
-  //
 
   @override
   Widget build(context) {
@@ -155,20 +120,20 @@ class _JobsInfoScreenState extends State<JobsInfoScreen> {
                       children: [
                         InfoLabel(
                           label: 'Name : ',
-                          text: "${widget.job.Name}",
+                          text: "${job!.Name}",
                         ),
                         SizedBox(height: 20),
                         InfoLabel(
                           label: 'Description : ',
-                          text: "${widget.job.Description}",
+                          text: "${job!.Description}",
                         ),
                         SizedBox(height: 30),
-                        if (widget.job.employee != null)
+                        if (job!.employee != null)
                           Wrap(
                             spacing: 8,
                             crossAxisAlignment: WrapCrossAlignment.center,
                             children: [
-                              InfoLabel(label: 'Employee : ', text: "${widget.job.employee!.FirstName} ${widget.job.employee!.LastName}"),
+                              InfoLabel(label: 'Employee : ', text: "${job!.employee!.FirstName} ${job!.employee!.LastName}"),
                               IconButton(
                                   icon: const Icon(Icons.edit),
                                   color: Colors.orange,
