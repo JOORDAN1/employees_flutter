@@ -3,6 +3,7 @@ import 'package:employees/Items/menu_button.dart';
 import 'package:employees/jobs/add_job_screen.dart';
 import 'package:employees/jobs/edit_job_screen.dart';
 import 'package:employees/jobs/jobs_api_handler.dart';
+import 'package:employees/jobs/jobs_info_screen.dart';
 import 'package:employees/models/job.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -55,47 +56,62 @@ class _JobsScreenState extends State<JobsScreen> {
           child: ListView.builder(
               itemCount: data.length,
               itemBuilder: (context, index) {
-                return Card(
-                  elevation: 2,
-                  child: ListTile(
-                    title: Text(
-                      data[index].Name,
-                      style: GoogleFonts.montserrat(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    subtitle: Text(
-                      data[index].Description,
-                      style: GoogleFonts.montserrat(
-                        fontSize: 14,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit),
-                          color: Colors.orange,
-                          tooltip: 'Edit',
-                          onPressed: () {
-                            Navigator.push(context,
-                                MaterialPageRoute(
-                                    builder: (context) => EditJobScreen(job: data[index], appBarText: "Edit task."))
-                            );
-                            print('Edit ${data[index].Name}');
-                          },
+                return InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => JobsInfoScreen(
+                          job: data[index],
+                          appBarText: "${data[index].Name}",
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.delete),
-                          color: Colors.red,
-                          tooltip: 'Delete',
-                          onPressed: () {
-                            deleteJob(data[index].Id);
-                          },
+                      ),
+                    );
+                  },
+                  borderRadius: BorderRadius.circular(20),
+                  child: Card(
+                    elevation: 2,
+                    child: ListTile(
+                      title: Text(
+                        data[index].Name,
+                        style: GoogleFonts.montserrat(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
-                      ],
+                      ),
+                      subtitle: Text(
+                        data[index].Description,
+                        style: GoogleFonts.montserrat(
+                          fontSize: 14,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.edit),
+                            color: Colors.orange,
+                            tooltip: 'Edit',
+                            onPressed: () async {
+                              await Navigator.push(context,
+                                  MaterialPageRoute(
+                                      builder: (context) => EditJobScreen(job: data[index], appBarText: "Edit task."))
+                              );
+                              getData();
+                              print('Edit ${data[index].Name}');
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete),
+                            color: Colors.red,
+                            tooltip: 'Delete',
+                            onPressed: () {
+                              deleteJob(data[index].Id);
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );
@@ -108,17 +124,14 @@ class _JobsScreenState extends State<JobsScreen> {
           children: [
             ListButton(
               buttonText: "Add Job",
-              onTap: () {
-                Navigator.push(context,
+              onTap: () async {
+                await Navigator.push(context,
                     MaterialPageRoute(
                         builder: (context) => AddJobScreen())
                 );
+                getData();
                 print('Add new job');
               },
-            ),
-            ListButton(
-              buttonText: "Refresh",
-              onTap: getData,
             ),
           ],
         )

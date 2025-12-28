@@ -1,7 +1,9 @@
 import 'package:employees/Items/list_Button.dart';
 import 'package:employees/Items/menu_button.dart';
+import 'package:employees/employees/add_employee_screen.dart';
 import 'package:employees/employees/edit_employee_screen.dart';
 import 'package:employees/employees/employees_api_handler.dart';
+import 'package:employees/employees/employees_info_screen.dart';
 import 'package:employees/models/employee.dart';
 import 'package:employees/projects/projects_api_handler.dart';
 import 'package:employees/models/project.dart';
@@ -56,47 +58,61 @@ class _EmployeesScreen extends State<EmployeesScreen> {
           child: ListView.builder(
               itemCount: data.length,
               itemBuilder: (context, index) {
-                return Card(
-                  elevation: 2,
-                  child: ListTile(
-                    title: Text(
-                      "${data[index].FirstName} ${data[index].LastName}",
-                      style: GoogleFonts.montserrat(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    subtitle: Text(
-                      data[index].Email,
-                      style: GoogleFonts.montserrat(
-                        fontSize: 14,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit),
-                          color: Colors.orange,
-                          tooltip: 'Edit',
-                          onPressed: () {
-                            Navigator.push(context,
-                                MaterialPageRoute(
-                                    builder: (context) => EditEmployeeScreen(employee: data[index], appBarText: "Edit ${data[index].FirstName} ${data[index].LastName}"))
-                            );
-                            print('Edit ${data[index].FirstName} ${data[index].LastName}');
-                          },
+                return InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EmployeesInfoScreen(
+                          employee: data[index],
+                          appBarText: "${data[index].FirstName} ${data[index].LastName}",
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.delete),
-                          color: Colors.red,
-                          tooltip: 'Delete',
-                          onPressed: () {
-                            deleteEmployee(data[index].Id);
-                          },
+                      ),
+                    );
+                  },
+                  borderRadius: BorderRadius.circular(20),
+                  child: Card(
+                    elevation: 2,
+                    child: ListTile(
+                      title: Text(
+                        "${data[index].FirstName} ${data[index].LastName}",
+                        style: GoogleFonts.montserrat(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
-                      ],
+                      ),
+                      subtitle: Text(
+                        data[index].Email!,
+                        style: GoogleFonts.montserrat(
+                          fontSize: 14,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.edit),
+                            color: Colors.orange,
+                            tooltip: 'Edit',
+                            onPressed: () async {
+                              await Navigator.push(context,
+                                  MaterialPageRoute(
+                                      builder: (context) => EditEmployeeScreen(employee: data[index], appBarText: "Edit ${data[index].FirstName} ${data[index].LastName}"))
+                              );
+                              getData();
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete),
+                            color: Colors.red,
+                            tooltip: 'Delete',
+                            onPressed: () {
+                              deleteEmployee(data[index].Id);
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );
@@ -109,17 +125,14 @@ class _EmployeesScreen extends State<EmployeesScreen> {
           children: [
             ListButton(
               buttonText: "Add Employee",
-              onTap: () {
-                Navigator.push(context,
+              onTap: () async {
+                await Navigator.push(context,
                     MaterialPageRoute(
-                        builder: (context) => AddProjectScreen())
+                        builder: (context) => AddEmployeeScreen())
                 );
+                getData();
                 print('Add new employee');
               },
-            ),
-            ListButton(
-              buttonText: "Refresh",
-              onTap: getData,
             ),
           ],
         )

@@ -1,0 +1,252 @@
+  import 'package:dropdown_search/dropdown_search.dart';
+  import 'package:employees/Items/Info_Label.dart';
+  import 'package:employees/Items/list_Button.dart';
+  import 'package:employees/models/employee.dart';
+import 'package:employees/models/employee_projects.dart';
+import 'package:employees/models/project_employees.dart';
+  import 'package:employees/projects/projects_api_handler.dart';
+  import 'package:employees/models/project.dart';
+  import 'package:flutter/material.dart';
+  import 'package:flutter_form_builder/flutter_form_builder.dart';
+  import 'package:google_fonts/google_fonts.dart';
+  import 'package:http/http.dart' as http;
+
+  import 'employees_not_in_project_api_handler.dart';
+
+  class InfoProjectScreen extends StatefulWidget{
+
+    final Project project;
+    final String appBarText;
+    const InfoProjectScreen({super.key, required this.project, required this.appBarText});
+
+    @override
+    State<InfoProjectScreen> createState()
+    {
+      return _InfoProjectScreenState();
+    }
+
+  }
+
+  class _InfoProjectScreenState extends State<InfoProjectScreen> {
+    ProjectApiHandler apiHandler = ProjectApiHandler();
+    EmployeesNotInProjectApiHandler notInApi = EmployeesNotInProjectApiHandler();
+
+    Project? project;
+    bool isLoading = true;
+    Employee? selectedEmployee;
+
+    @override
+    void initState() {
+      super.initState();
+      _loadProject();
+    }
+
+    Future<void> _loadProject() async {
+      final result = await apiHandler.getProjectData(widget.project.Id);
+
+      if (!mounted) return;
+
+      setState(() {
+        project = result;
+        isLoading = false;
+      });
+    }
+
+
+    Future<void> addEmployeeProject(Employee employee) async{
+
+        final employeeProjects = EmployeeProjects(
+          id: 0,
+          employeeId: employee.Id,
+          projectId: project!.Id
+        );
+
+        final response = await notInApi.addEmployeeProject(employeeProjects: employeeProjects);
+
+        if (response.statusCode >= 200 && response.statusCode < 300) {
+          Navigator.pop(context);
+          await _loadProject();
+        } else {
+          showDialog(
+            context: context,
+            builder: (_) => AlertDialog(
+              title: Text('Error'),
+              content: Text('Failed to add employee to project.'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text('OK'),
+                ),
+              ],
+            ),
+          );
+        }
+
+      if (!mounted) return;
+    }
+
+  void deleteEmployeeProjects (ProjectEmployees employee) async {
+      final response = await notInApi.deleteProject(empId: employee.Id, prjId: project!.Id);
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        await _loadProject();
+      }
+      else {
+        print("Error with deleting");
+      }
+    }
+
+
+
+
+    @override
+    Widget build(context) {
+      if (isLoading || project == null) {
+        return const Center(child: CircularProgressIndicator());
+      }
+      return MaterialApp(
+          home:Scaffold(
+              appBar: AppBar(
+                leading: IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: Icon(Icons.arrow_back, color: Colors.white)
+                ),
+                title: Text(widget.appBarText, style: GoogleFonts.montserrat(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold
+                )),
+                backgroundColor: Color.fromARGB(255, 30, 42, 56),
+                centerTitle: true,
+              ),
+              body:Container(
+                  margin: EdgeInsets.all(20),
+                  decoration: const BoxDecoration(
+                      // color: Color.fromARGB(255, 243, 247, 250)
+                  ),
+                  child : Padding(
+                    padding: EdgeInsetsGeometry.all(10),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          InfoLabel(
+                            label: 'Name : ',
+                            text: "${project!.Name}",
+                          ),
+                          SizedBox(height: 20),
+                          InfoLabel(
+                            label: 'Description : ',
+                            text: "${project!.Description}",
+                          ),
+                          SizedBox(height: 30),
+                          if (project!.Employees != null && project!.Employees!.isNotEmpty)
+                            Text(
+                              'Employees:',
+                              style: GoogleFonts.montserrat(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          SizedBox(height: 20),
+                          if (project!.Employees != null && project!.Employees!.isNotEmpty)
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: project!.Employees!.map((emp) {
+                                return Row(
+                                  children: [
+                                    Text(
+                                        '- ${emp.FirstName} ${emp.LastName}',
+                                        style: GoogleFonts.montserrat(
+                                          fontSize: 16,
+                                          color: Colors.black87,
+                                        )
+                                    ),
+                                    IconButton(
+                                        icon: const Icon(Icons.clear),
+                                        color: Colors.red,
+                                        tooltip: 'Delete',
+                                        onPressed: () {
+                                          deleteEmployeeProjects(emp);
+                                        }
+                                    ),
+                                  ],
+                                );
+                              }).toList()
+                              ,
+                            ),
+                          SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  showDialog(context: context, builder: (context){
+                                    return AlertDialog(
+                                      title: Text('Assign Employee'),
+                                      content:
+                                        DropdownSearch<Employee>(
+                                          items: (filter, infiniteScrollProps) async {
+                                            final employees = await notInApi.getEmployeesNotInProject(project!.Id);
+                                            if (filter != null && filter.isNotEmpty) {
+                                              return employees.where((e) =>
+                                              e.FirstName.toLowerCase().contains(filter.toLowerCase()) ||
+                                                  e.LastName.toLowerCase().contains(filter.toLowerCase())
+                                              ).toList();
+                                            }
+                                            return employees;
+                                          },
+                                          itemAsString: (e) => "${e.FirstName} ${e.LastName}",
+                                          compareFn: (a, b) => a.Id == b.Id,
+                                          popupProps: PopupProps.menu(
+                                              showSearchBox: true,
+                                              fit: FlexFit.loose
+                                          ),
+                                          onChanged: (value) {
+                                            selectedEmployee = value;
+                                          },
+                                        ),
+                                      actions: [
+                                        Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            ListButton(
+                                              buttonText: "Cancel",
+                                              onTap: () => Navigator.pop(context)
+                                            ),
+                                            ListButton(buttonText: "Add", onTap: () async {
+                                              if (selectedEmployee != null) {
+                                                await addEmployeeProject(selectedEmployee!);
+                                                // setState(() {});
+                                              }
+                                            }),
+                                          ],
+                                        )
+                                      ],
+                                      );
+                                  });
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  // backgroundColor: Color.fromARGB(255, 0, 102, 204),
+                                  // foregroundColor: Color.fromARGB(255, 255, 102, 0),
+                                  backgroundColor: Color(0xFFFF6B00),
+                                  foregroundColor: Colors.white,
+                                  minimumSize: Size(100, 50),
+                                  elevation: 4,
+                                  shadowColor: Colors.black.withOpacity(0.5),
+                                ),
+                                icon: Icon(Icons.person_add),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+              )
+          )
+      );
+    }
+  }

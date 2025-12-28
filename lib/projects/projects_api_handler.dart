@@ -8,7 +8,7 @@ import '../models/project.dart';
 class ProjectApiHandler {
   final String baseUri = "http://localhost:5068/api/projects";
 
-  Future<List<Project>> getProjectData() async{
+  Future<List<Project>> getProjectsData() async{
     List<Project> ProjectsData = [];
 
     final uri = Uri.parse("$baseUri");
@@ -31,6 +31,32 @@ class ProjectApiHandler {
     }
     return ProjectsData;
   }
+
+  Future<Project?> getProjectData(int id) async{
+    Project? projectData;
+
+    final uri = Uri.parse("$baseUri/$id");
+    try{
+      final response = await http.get(
+        uri,
+        headers: <String, String>{
+          'Content-type': 'application/json; charset=UTF-8'
+        },
+      );
+
+      if(response.statusCode >= 200 && response.statusCode <= 299)
+      {
+
+        final Map<String, dynamic> jsonData = jsonDecode(response.body);
+        projectData = Project.fromJson(jsonData);
+      }
+
+    } catch(e){
+      print("Error fetching project: $e");
+    }
+    return projectData;
+  }
+
 
   Future<http.Response> updateProject({required Project project, required int id}) async {
     final uri = Uri.parse("$baseUri/$id");

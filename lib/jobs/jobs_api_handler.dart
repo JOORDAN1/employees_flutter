@@ -31,6 +31,31 @@ class JobsApiHandler {
     return JobsData;
   }
 
+  Future<Job?> getJobData(int id) async{
+    Job? jobsData;
+
+    final uri = Uri.parse("$baseUri/$id");
+    try{
+      final response = await http.get(
+        uri,
+        headers: <String, String>{
+          'Content-type': 'application/json; charset=UTF-8'
+        },
+      );
+
+      if(response.statusCode >= 200 && response.statusCode <= 299)
+      {
+        final Map<String, dynamic> jsonData = jsonDecode(response.body);
+        jobsData = Job.fromJson(jsonData);
+
+      }
+
+    } catch(e){
+      print("Error fetching jobs: $e");
+    }
+    return jobsData;
+  }
+
   Future<http.Response> updateJob({required Job job, required int id}) async {
     final uri = Uri.parse("$baseUri/$id");
     late http.Response response;

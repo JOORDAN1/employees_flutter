@@ -7,22 +7,18 @@ import 'package:employees/projects/edit_project_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class ProjectsScreen extends StatefulWidget{
+import 'info_project_screen.dart';
 
+class ProjectsScreen extends StatefulWidget {
   const ProjectsScreen({super.key});
 
   @override
-  State<ProjectsScreen> createState()
-  {
+  State<ProjectsScreen> createState() {
     return _ProjectScreenState();
   }
-
-
-
 }
 
 class _ProjectScreenState extends State<ProjectsScreen> {
-
   final ProjectApiHandler apiHandler = ProjectApiHandler();
   List<Project> data = [];
   bool isLoading = true;
@@ -34,14 +30,14 @@ class _ProjectScreenState extends State<ProjectsScreen> {
   }
 
   void getData() async {
-    final result = await apiHandler.getProjectData();
+    final result = await apiHandler.getProjectsData();
     setState(() {
       data = result;
       isLoading = false;
     });
   }
 
-  void deleteProject(int id) async{
+  void deleteProject(int id) async {
     await apiHandler.deleteProject(id: id);
 
     getData();
@@ -54,8 +50,24 @@ class _ProjectScreenState extends State<ProjectsScreen> {
         Expanded(
           child: ListView.builder(
             itemCount: data.length,
-              itemBuilder: (context, index) {
-                return Card(
+            itemBuilder: (context, index) {
+              return InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => InfoProjectScreen(
+                        project: data[index],
+                        appBarText: "${data[index].Name}",
+                      ),
+                    ),
+                  );
+                },
+                borderRadius: BorderRadius.circular(20),
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
                   elevation: 2,
                   child: ListTile(
                     title: Text(
@@ -79,11 +91,17 @@ class _ProjectScreenState extends State<ProjectsScreen> {
                           icon: const Icon(Icons.edit),
                           color: Colors.orange,
                           tooltip: 'Edit',
-                          onPressed: () {
-                            Navigator.push(context, 
-                            MaterialPageRoute(
-                                builder: (context) => EditProjectScreen(project: data[index], appBarText: "Edit ${data[index].Name}"))
+                          onPressed: () async {
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EditProjectScreen(
+                                  project: data[index],
+                                  appBarText: "Edit ${data[index].Name}",
+                                ),
+                              ),
                             );
+                            getData();
                             print('Edit ${data[index].Name}');
                           },
                         ),
@@ -98,8 +116,9 @@ class _ProjectScreenState extends State<ProjectsScreen> {
                       ],
                     ),
                   ),
-                );
-              }
+                ),
+              );
+            },
           ),
         ),
         SizedBox(height: 20),
@@ -108,21 +127,17 @@ class _ProjectScreenState extends State<ProjectsScreen> {
           children: [
             ListButton(
               buttonText: "Add Project",
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(
-                        builder: (context) => AddProjectScreen())
+              onTap: () async {
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AddProjectScreen()),
                 );
+                getData();
                 print('Add new project');
               },
             ),
-            ListButton(
-              buttonText: "Refresh",
-              onTap: getData,
-            ),
           ],
-        )
-
+        ),
       ],
     );
   }
