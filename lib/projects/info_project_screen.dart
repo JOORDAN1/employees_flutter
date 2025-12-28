@@ -49,6 +49,7 @@ import 'package:employees/models/project_employees.dart';
           setState(() {
             widget.project.Employees?.add(
               ProjectEmployees(
+                Id : 0,
                 FirstName: selectedEmployee!.FirstName,
                 LastName: selectedEmployee!.LastName,
               ),
@@ -74,12 +75,14 @@ import 'package:employees/models/project_employees.dart';
       if (!mounted) return;
     }
 
-  void deleteEmployeeProjects (Employee employee) async {
+  void deleteEmployeeProjects (ProjectEmployees employee) async {
       final response = await notInApi.deleteProject(empId: employee.Id, prjId: widget.project.Id);
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
         setState(() {
-          widget.project.Employees?.remove(employee);
+          widget.project.Employees?.removeWhere(
+                  (e) => e.Id == employee.Id
+          );
         });
       }
       else {
@@ -130,38 +133,39 @@ import 'package:employees/models/project_employees.dart';
                             text: "${widget.project.Description}",
                           ),
                           SizedBox(height: 30),
-                          Text(
-                            'Employees:',
-                            style: GoogleFonts.montserrat(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                          if (widget.project.Employees != null && widget.project.Employees!.isNotEmpty)
+                            Text(
+                              'Employees:',
+                              style: GoogleFonts.montserrat(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
                           SizedBox(height: 20),
                           if (widget.project.Employees != null && widget.project.Employees!.isNotEmpty)
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: widget.project.Employees!.map((emp) {
-                                  return Row(
-                                    children: [
-                                      Text(
+                                return Row(
+                                  children: [
+                                    Text(
                                         '- ${emp.FirstName} ${emp.LastName}',
-                                          style: GoogleFonts.montserrat(
-                                            fontSize: 16,
-                                            color: Colors.black87,
-                                          )
-                                      ),
-                                      IconButton(
+                                        style: GoogleFonts.montserrat(
+                                          fontSize: 16,
+                                          color: Colors.black87,
+                                        )
+                                    ),
+                                    IconButton(
                                         icon: const Icon(Icons.clear),
                                         color: Colors.red,
                                         tooltip: 'Delete',
                                         onPressed: () {
-                                          // deleteEmployeeProjects(emp);
+                                          deleteEmployeeProjects(emp);
                                         }
-                                      ),
-                                    ],
-                                  );
-                                }).toList()
+                                    ),
+                                  ],
+                                );
+                              }).toList()
                               ,
                             ),
                           SizedBox(height: 20),

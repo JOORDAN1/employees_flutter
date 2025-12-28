@@ -62,7 +62,6 @@ class _ProjectScreenState extends State<ProjectsScreen> {
                       ),
                     ),
                   );
-                  print('Edit ${data[index].Name}');
                 },
                 borderRadius: BorderRadius.circular(20),
                 child: Card(
@@ -92,8 +91,8 @@ class _ProjectScreenState extends State<ProjectsScreen> {
                           icon: const Icon(Icons.edit),
                           color: Colors.orange,
                           tooltip: 'Edit',
-                          onPressed: () {
-                            Navigator.push(
+                          onPressed: () async {
+                            await Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => EditProjectScreen(
@@ -102,6 +101,7 @@ class _ProjectScreenState extends State<ProjectsScreen> {
                                 ),
                               ),
                             );
+                            getData();
                             print('Edit ${data[index].Name}');
                           },
                         ),
@@ -127,15 +127,15 @@ class _ProjectScreenState extends State<ProjectsScreen> {
           children: [
             ListButton(
               buttonText: "Add Project",
-              onTap: () {
-                Navigator.push(
+              onTap: () async {
+                await Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => AddProjectScreen()),
                 );
+                getData();
                 print('Add new project');
               },
             ),
-            ListButton(buttonText: "Refresh", onTap: getData),
           ],
         ),
       ],
