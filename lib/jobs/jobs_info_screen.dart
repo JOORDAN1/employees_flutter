@@ -90,6 +90,10 @@ class _JobsInfoScreenState extends State<JobsInfoScreen> {
 
   @override
   Widget build(context) {
+    if (isLoading || job == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     return MaterialApp(
         home:Scaffold(
             appBar: AppBar(

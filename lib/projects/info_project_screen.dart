@@ -101,6 +101,9 @@ import 'package:employees/models/project_employees.dart';
 
     @override
     Widget build(context) {
+      if (isLoading || project == null) {
+        return const Center(child: CircularProgressIndicator());
+      }
       return MaterialApp(
           home:Scaffold(
               appBar: AppBar(
