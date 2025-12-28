@@ -30,7 +30,7 @@ class _ProjectScreenState extends State<ProjectsScreen> {
   }
 
   void getData() async {
-    final result = await apiHandler.getProjectData();
+    final result = await apiHandler.getProjectsData();
     setState(() {
       data = result;
       isLoading = false;

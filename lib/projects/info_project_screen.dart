@@ -31,8 +31,26 @@ import 'package:employees/models/project_employees.dart';
     ProjectApiHandler apiHandler = ProjectApiHandler();
     EmployeesNotInProjectApiHandler notInApi = EmployeesNotInProjectApiHandler();
 
-
+    // Project? project;
+    // bool isLoading = true;
     Employee? selectedEmployee;
+
+    @override
+    // void initState() {
+    //   super.initState();
+    //   _loadProject();
+    // }
+    //
+    // Future<void> _loadProject() async {
+    //   final result = await apiHandler.getProjectData(widget.project.Id);
+    //
+    //   if (!mounted) return;
+    //
+    //   setState(() {
+    //     project = result;
+    //     isLoading = false;
+    //   });
+    // }
 
 
     Future<void> addEmployeeProject(Employee employee) async{
